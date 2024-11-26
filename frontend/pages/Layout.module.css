@@ -1,0 +1,11 @@
+.cardContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; 
+  }
+  
+ 
+  .cardContainer > * {
+    margin-bottom: 16px; 
+  }
+  

@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('n2tech')
+    }
+    stages {
+        stage('Build image') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'n2tech', url: 'url eklenecek dosyalar gite atıldığında']])
+                script {
+                    sh '''
+                    docker build -t n2tech/vaka_frontend:3 .
+                    '''
+                }
+            }
+        }
+        stage('Push') {
+            steps {
+                sh '''
+                if [ -f .env ]; then
+                    export $(grep -v '^#' .env | xargs)
+                fi
+                echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u n2tech --password-stdin
+                docker push n2tech/vaka_frontend:3
+                '''
+            }
+        }
+        stage('Run Docker Compose') {
+            steps {
+                sh '''
+                cd /var/tmp/demo-vaka-deploy/
+                docker-compose -f docker-compose.main.yml up -d
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }
+}

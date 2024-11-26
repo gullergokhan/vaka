@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: n2tech/vaka_frontend:3
+    ports:
+      - "3000:3000"
+    networks:
+      - demo-net
+
+  backend:
+    image: n2tech/vaka_backend:3
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env.backend
+    networks:
+      - demo-net
+    volumes:
+      - static-volume:/home/static
+      - media-volume:/home/media
+    depends_on:
+      - db
+      - smtp-server
+
+  db:
+    image: postgres:16.1
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data_main:/var/lib/postgresql/data
+    networks:
+      - demo-net
+
+  smtp-server:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+      - "587:587"
+    networks:
+      - demo-net
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: nginx
+    networks:
+      - demo-net
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:Z
+    ports:
+      - '80:80'
+
+volumes:
+  postgres_data_main:
+  static-volume:
+  media-volume:
+
+networks:
+  demo-net:
+    driver: bridge

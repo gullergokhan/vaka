@@ -1,0 +1,49 @@
+[flake8]
+extend-ignore =
+    # Do not call setattr with a constant attribute value, it is not any safer than normal property access
+    B010,
+    # Missing docstring in magic method
+    D105,
+    # Missing docstring in public nested class
+    D106,
+    # Missing docstring in public module
+    D100,
+    # Missing docstring in public class
+    D101,
+    # Missing docstring in public method
+    D102,
+    # Missing docstring in public function
+    D103,
+    # Missing docstring in public package
+    D104,
+    # Missing docstring in __init__
+    D107,
+    # line break before binary operator => Conflicts with black style.
+    W503,
+
+# Ignore some errors for specific files
+per-file-ignores =
+    # No blank lines allowed between a section header and its content
+    oka/applications/data_manager/views/setup.py: D412
+
+# Exclude some files and directories
+exclude =
+    # No need to traverse our git directory
+    .git,
+    # There's no value in checking cache directories
+    __pycache__
+    .tox,
+    .pytest_cache,
+    build,
+    dist,
+    *.pyc,
+    *.egg-info,
+    .cache,
+    .eggs
+
+# Set the maximum allowed McCabe complexity value for a block of code.
+# max-complexity = 10
+
+# Set the maximum length that any line (with some exceptions) may be.
+# Exceptions include lines that are either strings or comments which are entirely URLs
+max-line-length = 150
